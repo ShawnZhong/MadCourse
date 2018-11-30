@@ -1,0 +1,16 @@
+{
+  "name": "UW-Madison Enrollment",
+  "description": "A extension to check enrollment status for UW-Madison students",
+  "version": "1.0",
+  "permissions": [
+    "activeTab",
+    "webRequest",
+    "https://enroll.wisc.edu/*"
+  ],
+  "browser_action": {
+    "default_title": "Open course",
+    "default_icon": "icon.png",
+    "default_popup": "popup.html"
+  },
+  "manifest_version": 2
+}

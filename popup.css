@@ -1,0 +1,12 @@
+body{
+   margin: 0.5em;
+}
+
+.badge{
+  height: fit-content;
+  padding: 0.4em 0.4em;
+}
+
+.dropdown-divider{
+  margin: 0;
+}
