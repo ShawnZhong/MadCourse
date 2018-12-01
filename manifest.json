@@ -1,10 +1,11 @@
 {
-  "name": "UW-Madison Enrollment",
+  "name": "UW-Madison Course Monitor",
   "description": "A extension to check enrollment status for UW-Madison students",
   "version": "1.0",
   "permissions": [
     "activeTab",
     "webRequest",
+    "storage",
     "https://enroll.wisc.edu/*"
   ],
   "browser_action": {

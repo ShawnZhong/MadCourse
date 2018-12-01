@@ -2,21 +2,32 @@
 <html>
 
 <head>
-  <title>Set Page Color Popup</title>
-  <link rel="stylesheet" href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css"
-    integrity="sha384-wXznGJNEXNG1NFsbm0ugrLFMQPWswR3lds2VeinahP8N0zJw9VWSopbjv2x7WCvX" crossorigin="anonymous">
-  <link rel="stylesheet" href="popup.css">
-  <script src="popup.js"></script>
+  <title>UW-Madison Course Monitor</title>
+  <link rel="stylesheet" href="bootstrap-material-design.min.css">
+  <style>
+    .badge{
+      height: fit-content;
+      padding: 0.4em;
+    }
+  </style>
 </head>
 
-<body>
-  <div id="buttons" style="text-align: center;">
-    <button type="button" class="btn btn-outline-primary" style="margin: 0.5em 0;">
-      <a href="https://enroll.wisc.edu" target="_blank">Search Course</a>
-    </button>
+<body style="margin: 0.5em;">
+
+  <div class="input-group mb-3">
+    <input type="text" class="form-control" placeholder="Course name" id="course-input">
+    <div class="input-group-append">
+      <button type="button" class="btn btn-outline-primary" style="margin: 0.5em 0;" id="search-btn"> Search</button>
+    </div>
   </div>
 
-  <div id="course_list" style="width: max-content;"> </div>
+  <ul class="list-group" id="search-result">
+
+  </ul>
+
+  <div id="course_list" style="width: max-content; margin: auto;"> </div>
+
+  <script src="popup.js"></script>
 </body>
 
 </html>
