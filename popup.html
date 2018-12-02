@@ -4,26 +4,34 @@
 <head>
   <title>UW-Madison Course Monitor</title>
   <link rel="stylesheet" href="bootstrap-material-design.min.css">
+  <link rel="stylesheet" href="icons.css">
   <style>
     .badge{
       height: fit-content;
       padding: 0.4em;
     }
   </style>
+  <script src="jquery-3.2.1.slim.min.js"></script>
+  <script src="popper.js"></script>
+  <script src="bootstrap-material-design.js"></script>
 </head>
 
 <body style="margin: 0.5em;">
 
-  <div class="input-group mb-3">
-    <input type="text" class="form-control" placeholder="Course name" id="course-input">
-    <div class="input-group-append">
-      <button type="button" class="btn btn-outline-primary" style="margin: 0.5em 0;" id="search-btn"> Search</button>
+
+  <div class="card mb-3" style="min-width: 350px">
+    <div class="card-header">
+      <div class="input-group">
+        <input type="text" class="form-control" placeholder="Search course..." id="course-input">
+        <button class="btn bmd-btn-icon" for="search">
+          <i class="material-icons" id="search-btn">search</i>
+        </button>
+      </div>
     </div>
+    <div class="collapse" id="search-result"> </div>
   </div>
 
-  <ul class="list-group" id="search-result">
 
-  </ul>
 
   <div id="course_list" style="width: max-content; margin: auto;"> </div>
 

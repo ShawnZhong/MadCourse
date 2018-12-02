@@ -1,10 +1,31 @@
 'use strict';
 
-document.getElementById("search-btn").addEventListener("click", () => {
+var course_list_dom = document.getElementById("course_list");
+var search_result_dom = document.getElementById("search-result");
+
+function get_course_list() {
+  return new Promise(f => chrome.storage.local.get(["urls"], (result) => f(result.urls)))
+}
+
+function set_course_list(g) {
+  return new Promise(f => get_course_list().then(c => chrome.storage.local.set({ urls: g(c) }, f)))
+}
+
+function timeToString(time) {
+  return new Date(time).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric' });
+}
+
+function load_course(id) {
+  return fetch(`https://enroll.wisc.edu/api/search/v1/enrollmentPackages/1194/${id.replace("-", "/")}`).then(res => res.json()).then(course)
+}
+
+function search() {
   var data = {
     "queryString": document.getElementById("course-input").value,
     "selectedTerm": "1194",
-    "sortOrder": "SCORE"
+    "sortOrder": "SCORE",
+    "page": 1,
+    "pageSize": 10
   }
 
   var options = {
@@ -15,27 +36,31 @@ document.getElementById("search-btn").addEventListener("click", () => {
     body: JSON.stringify(data)
   }
 
-  fetch("https://enroll.wisc.edu/api/search/v1", options).then(res => res.json()).then(res => {
-    document.getElementById("search-result").innerHTML = res.hits.map(result_list).join("\n");
-
-    res.hits.forEach(c => {
-      var id = `${c.subject.subjectCode}/${c.courseId}`;
-      document.getElementById(`result-${id}`).addEventListener("click", () => {
-        chrome.storage.local.get(["urls"], result => {
-          chrome.storage.local.set({ urls: result.urls.concat(id), }, () => load_data());
-        });
+  fetch("https://enroll.wisc.edu/api/search/v1", options)
+    .then(res => res.json())
+    .then(res => {
+      search_result_dom.innerHTML = "";
+      res.hits.forEach(c => {
+        var id = `${c.subject.subjectCode}-${c.courseId}`;
+        var html = `
+      <div class="list-group-item list-group-item-action" id="result-${id}" style="cursor: pointer;">
+        ${c.courseDesignation}
+      </li>\n`;
+        search_result_dom.insertAdjacentHTML("beforeend", html);
+        document.getElementById(`result-${id}`).addEventListener("click", () => {
+          set_course_list(c => c.concat(id)).then(load_course(id));
+          $("#search-result").collapse('hide');
+        })
       })
-    })
-  })
-})
-
-function result_list(c) {
-  return `<li class="list-group-item" id="result-${c.subject.subjectCode}/${c.courseId}">${c.courseDesignation}</li>`;
+      $("#search-result").collapse('show');
+    });
 }
 
-function timeToString(time) {
-  return new Date(time).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric' });
-}
+document.getElementById("search-btn").addEventListener("click", search)
+
+document.getElementById("course-input").addEventListener("keyup", (event) => {
+  if (event.keyCode === 13) search();
+});
 
 function section(s) {
   var status = s.packageEnrollmentStatus.status;
@@ -52,12 +77,12 @@ function section(s) {
     .join(`</p><p style="padding-left: 3em;">`);
 
   return `
-    <div class="list-group-item list-group-item-action flex-column align-items-start" id="${s.docId}">
+    <div class="list-group-item list-group-item-action flex-column align-items-start" id="${s.docId}" style="cursor: pointer;" data-toggle="collapse" data-target="#detail-${s.docId}">
       <div class="d-flex w-100 justify-content-between">
         <h6 style="margin-bottom: 0; margin-top: 0;">${title}</h6>
         ${badge_html[status]}
       </div>
-      <div class="section-detail" style="display: none; padding-top: 1em;">
+      <div class="collapse" id="detail-${s.docId}" style="padding-top: 1em;">
         <p>Time: ${time}</p>
         <p>Enrollment: ${s.enrollmentStatus.currentlyEnrolled} (enrolled) / ${s.enrollmentStatus.capacity} (capacity)</p>
         <p>Waitlist: ${s.enrollmentStatus.waitlistCurrentSize} (on waitlist) / ${s.enrollmentStatus.waitlistCapacity} (capacity)</p>
@@ -66,17 +91,17 @@ function section(s) {
     </div>`;
 }
 
-var course_list_dom = document.getElementById("course_list");
-
 function course(c) {
-  var id = `${c[0].subjectCode}/${c[0].courseId}`;
+  var id = `${c[0].subjectCode}-${c[0].courseId}`;
   var html = `
-  <div class="card mb-3" id="${id}">
-    <div class="d-flex w-100 justify-content-between">
-        <h6 class="card-header" style="text-align: left; font-weight: bold;">
+  <div class="card mb-3" id="${id}" style="min-width: 350px">
+    <div class="card-header d-flex w-100 justify-content-between">
+        <h5 style="text-align: left; font-weight: bold; margin: 0; line-height: 175%;">
           ${c[0].sections[0].subject.shortDescription} ${c[0].catalogNumber}
-        </h6>
-        <span class="badge badge-danger" id="del-${id}">X</span>
+        </h5>
+        <button id="del-${id}" class="btn bmd-btn-icon dropdown-toggle" type="button" style="margin: 0;" >
+              <i class="material-icons">delete_outline</i>
+        </button>
     </div>
     <div class="list-group">
       ${c.reverse().map(section).join(`<div class="dropdown-divider" style="margin: 0;"></div>`)}
@@ -85,29 +110,11 @@ function course(c) {
 
   course_list_dom.insertAdjacentHTML("beforeend", html);
 
-  c.map(e => document.getElementById(e.docId))
-    .forEach(e => e.addEventListener("click", () => {
-      var detail = e.getElementsByClassName("section-detail")[0];
-      detail.style.display = detail.style.display == "none" ? "block" : "none";
-    }));
-
   document.getElementById("del-" + id).addEventListener("click", () => {
-    chrome.storage.local.get(["urls"], result => {
-      chrome.storage.local.set({
-        urls: result.urls.filter(e => !e.endsWith(id)),
-      }, () => load_data());
-    });
-  })
-
-}
-
-function load_data() {
-  course_list_dom.innerHTML = "";
-
-  chrome.storage.local.get(["urls"], result => {
-    Promise.all(result.urls.map(url => fetch(`https://enroll.wisc.edu/api/search/v1/enrollmentPackages/1194/${url}`).then(res => res.json()).then(course)))
-      .catch(() => window.open("https://enroll.wisc.edu/"))
+    set_course_list(c => c.filter(e => e != id)).then(document.getElementById(id).remove());
   })
 }
 
-load_data();
+get_course_list().then(c => Promise.all(c.map(load_course))
+  .catch(() => window.open("https://enroll.wisc.edu/"))
+)
