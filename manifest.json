@@ -1,7 +1,7 @@
 {
-  "name": "UW-Madison Course Monitor",
+  "name": "MadCourse",
   "description": "A extension to check enrollment status for UW-Madison students",
-  "version": "1.0",
+  "version": "1.1",
   "permissions": [
     "activeTab",
     "webRequest",

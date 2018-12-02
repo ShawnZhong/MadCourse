@@ -3,8 +3,9 @@
 var course_list_dom = document.getElementById("course_list");
 var search_result_dom = document.getElementById("search-result");
 
+
 function get_course_list() {
-  return new Promise(f => chrome.storage.local.get(["urls"], (result) => f(result.urls)))
+  return new Promise(f => chrome.storage.local.get(["urls"], result => f(result.urls ? result.urls : [])))
 }
 
 function set_course_list(g) {
@@ -17,6 +18,10 @@ function timeToString(time) {
 
 function load_course(id) {
   return fetch(`https://enroll.wisc.edu/api/search/v1/enrollmentPackages/1194/${id.replace("-", "/")}`).then(res => res.json()).then(course)
+}
+
+function require_login() {
+  window.open("https://enroll.wisc.edu/")
 }
 
 function search() {
@@ -115,6 +120,5 @@ function course(c) {
   })
 }
 
-get_course_list().then(c => Promise.all(c.map(load_course))
-  .catch(() => window.open("https://enroll.wisc.edu/"))
-)
+
+get_course_list().then(c => Promise.all(c.map(load_course)).catch(require_login))
