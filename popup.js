@@ -6,13 +6,13 @@ let course_list_dom = document.getElementById("course_list");
 let search_result_dom = document.getElementById("search-result");
 var term = 1194;
 
-// fetch("https://enroll.wisc.edu/api/search/v1/terms")
-//   .then(res => res.json())
-//   .then(e => Math.max(...e.map(e => e.termCode)))
-//   .then(e => {
-//     term = e;
-//     get_course_list().then(c => Promise.all(c.map(load_course)));
-//   }).catch(require_login)
+fetch("https://enroll.wisc.edu/api/search/v1/terms")
+  .then(res => res.json())
+  .then(e => Math.max(...e.map(e => e.termCode)))
+  .then(e => {
+    term = e;
+    get_course_list().then(c => Promise.all(c.map(load_course)));
+  }).catch(require_login)
 
 get_course_list().then(c => Promise.all(c.map(load_course)));
 

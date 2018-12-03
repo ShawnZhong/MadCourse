@@ -7,7 +7,8 @@
     "notifications",
     "webRequest",
     "alarms",
-    "storage"
+    "storage",
+    "https://enroll.wisc.edu/*"
   ],
   "browser_action": {
     "default_title": "Open course",
