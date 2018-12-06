@@ -1,7 +1,3 @@
 'use strict';
-let term;
 
-getTerm().then(async e => {
-    term = e;
-    setInterval(await loadAllCourses, 18000);
-});
+// setInterval(loadAllCourses, 18000000);setInterval(loadAllCourses, 18000000);

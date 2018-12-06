@@ -1,7 +1,7 @@
 {
   "name": "MadCourse",
-  "description": "A extension to check enrollment status for UW-Madison students",
-  "version": "1.2",
+  "description": "An extension to check enrollment status for UW-Madison students",
+  "version": "2.2",
   "permissions": [
     "activeTab",
     "notifications",
