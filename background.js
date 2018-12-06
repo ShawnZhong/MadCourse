@@ -1,4 +1,7 @@
 'use strict';
+let term;
 
-// notify("123", "213")
-// setInterval(() => { notify("123", "213") }, 3000);
+getTerm().then(async e => {
+    term = e;
+    setInterval(await loadAllCourses, 18000);
+});
