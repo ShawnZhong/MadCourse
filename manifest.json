@@ -1,9 +1,8 @@
 {
   "name": "MadCourse",
-  "description": "An extension to check enrollment status for UW-Madison students",
-  "version": "2.2",
+  "description": "MadCourse is an extension to check course status for UW-Madison students",
+  "version": "2.3",
   "permissions": [
-    "activeTab",
     "notifications",
     "webRequest",
     "alarms",
@@ -11,13 +10,18 @@
     "https://enroll.wisc.edu/*"
   ],
   "browser_action": {
-    "default_title": "Open course",
-    "default_icon": "icon.png",
+    "default_title": "Open MadCourse",
+    "default_icon": "icons/icon128.png",
     "default_popup": "popup.html"
   },
   "background": {
     "page": "background.html",
     "persistent": true
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
   },
   "manifest_version": 2
 }

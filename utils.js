@@ -145,7 +145,7 @@ function handleError(err) {
     if (err.message === "Failed to fetch") {
         chrome.notifications.create({
             type: "basic",
-            iconUrl: "icon.png",
+            iconUrl: "icons/icon128.png",
             title: "Login required",
             message: "Please login to the wisc account"
         });
