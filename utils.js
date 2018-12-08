@@ -135,7 +135,7 @@ function timeToString(time) {
 function sendNotification(title, message) {
     chrome.notifications.create({
         type: "basic",
-        iconUrl: "icon.png",
+        iconUrl: "icons/icon128.png",
         title,
         message
     });
@@ -143,12 +143,7 @@ function sendNotification(title, message) {
 
 function handleError(err) {
     if (err.message === "Failed to fetch") {
-        chrome.notifications.create({
-            type: "basic",
-            iconUrl: "icons/icon128.png",
-            title: "Login required",
-            message: "Please login to the wisc account"
-        });
+        sendNotification("Login required", "Please login to your wisc account");
         window.open("https://enroll.wisc.edu/");
     }
     throw err;
