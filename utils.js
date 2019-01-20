@@ -1,6 +1,6 @@
 'use strict';
 
-let term;
+let term = 1194;
 
 async function setTerm() {
     if (term) return;
