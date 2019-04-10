@@ -1,6 +1,6 @@
 'use strict';
 
-let term = 1194;
+let term = 1202;
 
 async function setTerm() {
     if (term) return;
@@ -20,7 +20,7 @@ async function searchCourse(query) {
 
     const options = {
         method: "POST",
-        headers: {"Content-Type": "application/json;charset=UTF-8"},
+        headers: { "Content-Type": "application/json;charset=UTF-8" },
         body: JSON.stringify(data)
     };
 
@@ -35,7 +35,7 @@ async function getCourseList() {
 }
 
 async function setCourseList(courseList) {
-    return await new Promise(f => chrome.storage.local.set({courseList}, f))
+    return await new Promise(f => chrome.storage.local.set({ courseList }, f))
 }
 
 async function removeFromCourseList(courseID) {
@@ -44,7 +44,7 @@ async function removeFromCourseList(courseID) {
 }
 
 async function addToCourseList(courseID) {
-    const courseMeta = {alarm: false, id: courseID};
+    const courseMeta = { alarm: false, id: courseID };
     const courseList = await getCourseList();
     if (courseList.filter(e => e.id === courseID).length !== 0) return;
     await setCourseList(courseList.concat(courseMeta));
@@ -62,7 +62,7 @@ async function modifyCourseListByCourseID(courseID, f) {
 async function loadCourse(courseMeta) {
     const url = `https://enroll.wisc.edu/api/search/v1/enrollmentPackages/${term}/${courseMeta.id.replace("-", "/")}`;
     return await fetch(url).then(res => res.json())
-        .then(list => ({list, ...courseMeta})).catch(handleError)
+        .then(list => ({ list, ...courseMeta })).catch(handleError)
 }
 
 
@@ -77,7 +77,7 @@ async function loadAllCourses() {
         const courseList = await getCourseList();
         courseData = await Promise.all(courseList.map(loadCourse));
         await checkDifference(courseData);
-        await new Promise(f => chrome.storage.local.set({courseData}, f));
+        await new Promise(f => chrome.storage.local.set({ courseData }, f));
     } catch (e) {
         courseData = await getSavedCourseData();
     }
@@ -91,7 +91,7 @@ async function checkDifference(newData) {
     newData.filter(e => e.alarm).forEach(newCourse => {
         const oldCourse = oldData.find(e => e.id === newCourse.id);
         checkCourseDifference(newCourse, oldCourse);
-        console.log({oldCourse, newCourse});
+        console.log({ oldCourse, newCourse });
     })
 }
 
@@ -120,7 +120,7 @@ function checkCourseDifference(newCourse, oldCourse) {
 }
 
 async function getMadGradesURL(courseName) {
-    const options = {headers: {"Authorization": "Token token=16d5319478d74e9ab353cc56e74cc6ea"}};
+    const options = { headers: { "Authorization": "Token token=16d5319478d74e9ab353cc56e74cc6ea" } };
     const url = `https://api.madgrades.com/v1/courses?query=${courseName}`;
     return await fetch(url, options).then(res => res.json())
         .then(res => res.results[0].uuid)
@@ -129,7 +129,7 @@ async function getMadGradesURL(courseName) {
 }
 
 function timeToString(time) {
-    return new Date(time).toLocaleTimeString('en-US', {hour: 'numeric', minute: 'numeric'});
+    return new Date(time).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric' });
 }
 
 function sendNotification(title, message) {
