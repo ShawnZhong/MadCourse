@@ -1,7 +1,7 @@
 {
   "name": "MadCourse",
   "description": "MadCourse is an extension to check course status for UW-Madison students",
-  "version": "2.5",
+  "version": "2.6",
   "permissions": [
     "notifications",
     "webRequest",
